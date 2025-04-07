@@ -4,26 +4,17 @@
 echo "Building the application..."
 npm run build
 
-# Create a temporary directory for deployment
-mkdir -p tmp_deploy
+# Create .nojekyll file
+echo "Creating .nojekyll file..."
+touch dist/.nojekyll
 
-# Copy the built files to the temporary directory
-cp -r dist/* tmp_deploy/
+# Configure Git
+echo "Configuring Git..."
+git config --global user.email "github-actions@github.com"
+git config --global user.name "GitHub Actions"
 
-# Create a .nojekyll file to bypass Jekyll processing
-touch tmp_deploy/.nojekyll
-
-# Initialize git in the temporary directory
-cd tmp_deploy
-git init
-git add .
-git commit -m "Deploy to GitHub Pages"
-
-# Force push to the gh-pages branch
-git push -f https://github.com/nganlinh4/language-chatbot.git main:gh-pages
-
-# Clean up
-cd ..
-rm -rf tmp_deploy
+# Deploy to GitHub Pages
+echo "Deploying to GitHub Pages..."
+npx gh-pages -d dist -t
 
 echo "Deployment complete!"
