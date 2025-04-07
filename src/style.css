@@ -254,7 +254,7 @@ body {
   color: #fff;
 }
 
-.chat-input button[type="submit"] {
+.send-button {
   padding: 0.8rem 1.2rem;
   background-color: #4a5568;
   color: white;
@@ -265,14 +265,21 @@ body {
   font-weight: 500;
 }
 
-.chat-input button[type="submit"]:hover:not(:disabled) {
+.send-button:hover:not(:disabled) {
   background-color: #5a6578;
 }
 
-.chat-input button[type="submit"]:disabled {
+.send-button:disabled {
   background-color: #3a3a3a;
   color: #666;
   cursor: not-allowed;
+}
+
+/* Button Container Styles */
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Voice Recorder Styles */
@@ -424,11 +431,13 @@ body {
     color: #333;
   }
 
-  .mic-button {
+  .mic-button,
+  .send-button {
     background-color: #3b82f6;
   }
 
-  .mic-button:hover:not(:disabled) {
+  .mic-button:hover:not(:disabled),
+  .send-button:hover:not(:disabled) {
     background-color: #2563eb;
   }
 

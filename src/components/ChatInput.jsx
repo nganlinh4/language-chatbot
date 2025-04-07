@@ -19,6 +19,15 @@ function ChatInput({ onSendMessage, onSendVoice, disabled, language = 'en' }) {
     }
   };
 
+  // Separate click handler for the send button to prevent event propagation issues
+  const handleSendClick = (e) => {
+    e.stopPropagation(); // Stop event from propagating
+    if (message.trim() && !disabled) {
+      onSendMessage(message);
+      setMessage('');
+    }
+  };
+
   // Get translations based on current interface language
   const t = translations[language];
 
@@ -31,14 +40,21 @@ function ChatInput({ onSendMessage, onSendVoice, disabled, language = 'en' }) {
         placeholder={t.inputPlaceholder}
         disabled={disabled}
       />
-      <VoiceRecorder
-        onRecordingComplete={handleVoiceRecording}
-        disabled={disabled}
-        language={language}
-      />
-      <button type="submit" disabled={disabled || !message.trim()}>
-        {t.sendButton}
-      </button>
+      <div className="button-container">
+        <VoiceRecorder
+          onRecordingComplete={handleVoiceRecording}
+          disabled={disabled}
+          language={language}
+        />
+        <button
+          type="button"
+          onClick={handleSendClick}
+          disabled={disabled || !message.trim()}
+          className="send-button"
+        >
+          {t.sendButton}
+        </button>
+      </div>
     </form>
   );
 }
