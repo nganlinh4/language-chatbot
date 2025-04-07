@@ -7,9 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build && (touch dist/.nojekyll || echo > dist/.nojekyll)",
+    "predeploy": "npm run build",
     "predeploy:win": "powershell -File predeploy.ps1",
-    "deploy": "gh-pages -d dist -t true"
+    "deploy": "node deploy-gh-pages.js",
+    "deploy:old": "gh-pages -d dist -t true"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
