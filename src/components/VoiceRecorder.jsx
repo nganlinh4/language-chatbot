@@ -85,7 +85,12 @@ function VoiceRecorder({ onRecordingComplete, disabled, language = 'en' }) {
           <span className="recording-time">{formatTime(recordingTime)}</span>
           <button
             className="stop-recording-button"
-            onClick={stopRecording}
+            onClick={(e) => {
+              e.preventDefault(); // Prevent any form submission
+              e.stopPropagation(); // Stop event bubbling
+              stopRecording();
+            }}
+            type="button" // Explicitly set type to button
           >
             <span className="recording-icon"></span>
             {t.stopRecording}
@@ -94,9 +99,14 @@ function VoiceRecorder({ onRecordingComplete, disabled, language = 'en' }) {
       ) : (
         <button
           className="mic-button"
-          onClick={startRecording}
+          onClick={(e) => {
+            e.preventDefault(); // Prevent any form submission
+            e.stopPropagation(); // Stop event bubbling
+            startRecording();
+          }}
           disabled={disabled}
           title="Record voice message"
+          type="button" // Explicitly set type to button
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
             <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
