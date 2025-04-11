@@ -7,7 +7,7 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react()
   ],
-  base: '/', // Using only root base path for both dev and prod
+  base: command === 'build' ? '/language-chatbot/' : '/', // Use /language-chatbot/ for production, / for development
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
