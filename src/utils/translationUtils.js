@@ -1,3 +1,6 @@
+// Maximum number of previous messages to include in the conversation history
+const MAX_HISTORY_MESSAGES = 5;
+
 // Function to detect language (English or Vietnamese)
 export const detectLanguage = (text) => {
   // Simple detection based on character set
@@ -8,35 +11,70 @@ export const detectLanguage = (text) => {
 };
 
 // Function to call Gemini API for text translation
-export const callGeminiForTranslation = async (text, apiKey, model) => {
+export const callGeminiForTranslation = async (text, apiKey, model, conversationHistory = []) => {
   // Detect language
   const sourceLanguage = detectLanguage(text);
-  const targetLanguage = sourceLanguage === 'en' ? 'vi' : 'en';
+  const targetLanguage = sourceLanguage === 'en' ? 'vi' : 'en'; // Used in prompt creation
 
   // Create prompt based on detected language
-  let prompt = '';
+  let userPrompt = '';
   if (sourceLanguage === 'en') {
-    prompt = `Translate this English text to Vietnamese. Return ONLY the translation, no other text: "${text}"`;
+    userPrompt = `Translate this English text to Vietnamese. Return ONLY the translation, no other text: "${text}"`;
   } else {
-    prompt = `Translate this Vietnamese text to English. Return ONLY the translation, no other text: "${text}"`;
+    userPrompt = `Translate this Vietnamese text to English. Return ONLY the translation, no other text: "${text}"`;
   }
+
+  // Prepare contents array with instruction (as user role since system role is not supported)
+  const contents = [
+    {
+      role: "user",
+      parts: [{
+        text: "INSTRUCTION: You are a translation assistant that translates between English and Vietnamese. " +
+              "When given text in English, translate it to Vietnamese. " +
+              "When given text in Vietnamese, translate it to English. " +
+              "Return ONLY the translation without any additional text or explanations."
+      }]
+    },
+    {
+      role: "model",
+      parts: [{
+        text: "I understand. I will translate between English and Vietnamese, returning only the translation without additional text."
+      }]
+    }
+  ];
+
+  // Add conversation history if available (limited to MAX_HISTORY_MESSAGES)
+  if (conversationHistory && conversationHistory.length > 0) {
+    // Get the last few messages (up to MAX_HISTORY_MESSAGES)
+    const recentHistory = conversationHistory.slice(-MAX_HISTORY_MESSAGES);
+
+    // Add each message to the contents array
+    recentHistory.forEach(msg => {
+      // Skip very short messages that might be just acknowledgments
+      if (msg.text.length > 5) {
+        contents.push({
+          role: msg.isUser ? "user" : "model",
+          parts: [{ text: msg.text }]
+        });
+      }
+    });
+  }
+
+  // Add the current user message
+  contents.push({
+    role: "user",
+    parts: [{ text: userPrompt }]
+  });
 
   // Prepare request data
   const requestData = {
     model: model,
-    contents: [
-      {
-        role: "user",
-        parts: [
-          { text: prompt }
-        ]
-      }
-    ]
+    contents: contents
   };
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${requestData.model}:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -66,7 +104,7 @@ export const callGeminiForTranslation = async (text, apiKey, model) => {
 };
 
 // Function to call Gemini API for speech translation
-export const callGeminiForSpeechTranslation = async (base64Audio, apiKey, model) => {
+export const callGeminiForSpeechTranslation = async (base64Audio, apiKey, model, conversationHistory = []) => {
   try {
     // First, transcribe the audio using Gemini
     const transcriptionResult = await transcribeAudio(base64Audio, apiKey, model);
@@ -75,7 +113,7 @@ export const callGeminiForSpeechTranslation = async (base64Audio, apiKey, model)
     const sourceLanguage = detectLanguage(transcriptionResult);
 
     // Translate the transcription
-    const translatedText = await callGeminiForTranslation(transcriptionResult, apiKey, model);
+    const translatedText = await callGeminiForTranslation(transcriptionResult, apiKey, model, conversationHistory);
 
     return {
       transcription: transcriptionResult,
@@ -112,7 +150,7 @@ async function transcribeAudio(base64Audio, apiKey, model) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${requestData.model}:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {

@@ -135,10 +135,46 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
-/* Override for light theme */
+/* Overrides for light theme */
 .theme-light .chat-input {
   background-color: #f0f4ff;
   border-top: 1px solid #d1d5db;
+}
+
+.theme-light .chat-input .chat-textarea {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #333333;
+}
+
+.theme-light .unified-header {
+  background-color: #3b82f6;
+  border-bottom: 1px solid #2563eb;
+}
+
+.theme-light .tab-button {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.theme-light .tab-button:hover,
+.theme-light .tab-button.active {
+  color: #ffffff;
+}
+
+.theme-light .tab-button.active::after {
+  background-color: #ffffff;
+}
+
+.theme-light .meta-seo-generator h2 {
+  color: #213547; /* Match text-color from light theme */
+}
+
+/* Fix for send and mic buttons in disabled state in light theme */
+.theme-light .send-button:disabled,
+.theme-light .mic-button:disabled {
+  background-color: #d1d5db; /* Light gray background */
+  color: #9ca3af; /* Medium gray text */
+  opacity: 0.8;
 }
 
 .chat-input input {

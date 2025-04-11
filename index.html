@@ -2,9 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>English-Vietnamese Translator</title>
+    <link rel="icon" type="image/png" href="/language-chatbot/icons/icon-192x192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <meta name="description" content="A translation chatbot for English and Vietnamese using Gemini API" />
+    <meta name="apple-mobile-web-app-title" content="Translator" />
+    <title>Translator</title>
+
+    <!-- PWA support -->
+    <link rel="manifest" href="/language-chatbot/manifest.json" />
+    <link rel="apple-touch-icon" href="/language-chatbot/icons/icon-192x192.png" />
+    <link rel="apple-touch-startup-image" href="/language-chatbot/icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/language-chatbot/icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="/language-chatbot/icons/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/language-chatbot/icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/language-chatbot/icons/splash-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" />
+
+    <!-- Import Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Additional meta tags to fix mobile input issues -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
@@ -22,6 +46,22 @@
       }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
+
+    <!-- Fix for mobile viewport height issues -->
+    <script type="text/javascript">
+      // Fix for mobile browsers' viewport height issues
+      function setVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+
+      // Set the value on page load
+      window.addEventListener('load', setVH);
+
+      // Update the value on resize/orientation change
+      window.addEventListener('resize', setVH);
+      window.addEventListener('orientationchange', setVH);
+    </script>
   </head>
   <body>
     <div id="app"></div>
