@@ -9,29 +9,3 @@
 @import './styles/status-indicator.css';
 @import './styles/seo-keyword.css';
 @import './styles/country-research.css';
-
-.install-pwa-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 12px 24px;
-  background-color: var(--primary-color, #4285F4);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  font-weight: 500;
-  z-index: 1000;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.install-pwa-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.install-pwa-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
