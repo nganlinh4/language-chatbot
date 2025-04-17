@@ -1,90 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found - Translator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background-color: #1a1a1a;
-      color: #ffffff;
-      text-align: center;
-    }
-    
-    .container {
-      max-width: 800px;
-      padding: 20px;
-    }
-    
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-      line-height: 1.5;
-    }
-    
-    .button {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: #3b82f6;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-      transition: background-color 0.2s;
-      margin: 0.5rem;
-    }
-    
-    .button:hover {
-      background-color: #2563eb;
-    }
-    
-    .error-code {
-      font-size: 6rem;
-      font-weight: bold;
-      margin: 0;
-      color: #3b82f6;
-    }
-    
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-  </style>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and converts the path and query
+    // string into just a query string, and then redirects the browser
+    // to the new URL with only a query string and hash fragment.
+    var pathSegmentsToKeep = 1;
+
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
 </head>
 <body>
-  <div class="container">
-    <p class="error-code">404</p>
-    <h1>Page Not Found</h1>
-    <p>
-      The page you are looking for might have been removed, had its name changed,
-      or is temporarily unavailable.
-    </p>
-    
-    <div class="buttons">
-      <a href="https://nganlinh4.github.io/language-chatbot/" class="button">Go to Homepage</a>
-      <a href="https://github.com/nganlinh4/language-chatbot" class="button">View on GitHub</a>
-    </div>
-    
-    <p style="margin-top: 2rem;">
-      If you're trying to access the Translator app, please note that it's currently
-      experiencing deployment issues on GitHub Pages. We recommend using the local development
-      server to access the application.
-    </p>
-  </div>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, <a href="/">click here</a>.</p>
 </body>
 </html>
