@@ -24,6 +24,7 @@ function App() {
   const [fontSize, setFontSize] = useState(1); // Default to medium (1.0)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   // Load settings from localStorage on component mount
   useEffect(() => {
@@ -48,6 +49,32 @@ function App() {
       setUsername(savedUsername);
     }
   }, []);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      if (window.deferredPrompt) {
+        setShowInstallPrompt(true);
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!window.deferredPrompt) return;
+    
+    const promptEvent = window.deferredPrompt;
+    window.deferredPrompt = null;
+    
+    try {
+      const result = await promptEvent.prompt();
+      console.log('Install prompt result:', result);
+      setShowInstallPrompt(false);
+    } catch (err) {
+      console.error('Error showing install prompt:', err);
+    }
+  };
 
   // Handle language change from TranslationChatbot
   const handleSettingsChange = (settings) => {
@@ -145,7 +172,11 @@ function App() {
           onLanguageChange={handleLanguageChange}
         />
       )}
-
+      {showInstallPrompt && (
+        <button onClick={handleInstallClick} className="install-pwa-btn">
+          Install App
+        </button>
+      )}
     </>
   );
 }

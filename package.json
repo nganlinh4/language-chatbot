@@ -2,6 +2,7 @@
   "name": "language-chatbot",
   "private": true,
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:host": "vite --host",

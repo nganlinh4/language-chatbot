@@ -4,10 +4,18 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
-  plugins: [
-    react()
-  ],
-  base: command === 'build' ? '/language-chatbot/' : '/', // Use /language-chatbot/ for production, / for development
+  plugins: [react()],
+  base: command === 'build' ? '/language-chatbot/' : '/',
+  server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      port: 5173,
+      clientPort: 5173
+    }
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -17,13 +25,5 @@ export default defineConfig(({ command }) => ({
         main: resolve(__dirname, 'index.html'),
       },
     },
-  }, // End of build block
-  server: {
-    hmr: {
-      protocol: 'ws', // Explicitly set protocol
-      host: 'localhost', // Explicitly set host
-      port: 5173, // Explicitly set HMR port to match the server
-      // path: '/' // Let Vite handle the path based on base/host/port
-    }
   }
-})) // End of returned object
+}))
