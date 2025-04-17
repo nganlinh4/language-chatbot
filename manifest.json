@@ -2,7 +2,7 @@
   "name": "Translator",
   "short_name": "Translator",
   "description": "A translation chatbot for English and Vietnamese using Gemini API",
-  "start_url": "/language-chatbot/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a1a1a",
@@ -62,7 +62,7 @@
       "name": "Open Translator",
       "short_name": "Translate",
       "description": "Open the translation interface",
-      "url": "/language-chatbot/?tab=chat",
+      "url": "./?tab=chat",
       "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ]
