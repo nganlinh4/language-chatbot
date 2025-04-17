@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import translations from '../utils/translations';
 
 function MetaSeoGenerator({ language = 'en' }) {
@@ -10,12 +10,26 @@ function MetaSeoGenerator({ language = 'en' }) {
   const [redirectMethod, setRedirectMethod] = useState('both'); // 'both', 'meta', or 'js'
   const [generatedCode, setGeneratedCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [advancedOptions, setAdvancedOptions] = useState(false);
+  const [cloakingMethod, setCloakingMethod] = useState('basic'); // 'basic', 'advanced', or 'custom'
+  const [customCloakingCode, setCustomCloakingCode] = useState('');
+  const [metaKeywords, setMetaKeywords] = useState('');
+  const [metaAuthor, setMetaAuthor] = useState('');
+  const [metaViewport, setMetaViewport] = useState('width=device-width, initial-scale=1.0');
 
   // Get translations based on current interface language
   const t = translations[language];
 
-  const generateCode = () => {
-    if (!destinationUrl) {
+  // Generate preview HTML for the meta tags
+  useEffect(() => {
+    if (showPreview && metaTitle) {
+      generateCode(false);
+    }
+  }, [showPreview, metaTitle, metaDescription, metaImage, destinationUrl, metaKeywords, metaAuthor, metaViewport]);
+
+  const generateCode = (setOutput = true) => {
+    if (!destinationUrl && setOutput) {
       alert(t.metaSeoUrlRequired);
       return;
     }
@@ -24,18 +38,48 @@ function MetaSeoGenerator({ language = 'en' }) {
     const includeMetaRefresh = redirectMethod === 'meta' || redirectMethod === 'both';
     const includeJsRedirect = redirectMethod === 'js' || redirectMethod === 'both';
 
+    // Generate cloaking code based on selected method
+    let cloakingCode = '';
+    if (cloakingMethod === 'advanced') {
+      cloakingCode = `
+    <!-- Advanced cloaking for search engines vs. users -->
+    <script type="text/javascript">
+        // Check if the visitor is a search engine bot
+        function isBot() {
+            return /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+        }
+
+        // Show different content based on visitor type
+        if (!isBot()) {
+            // For regular users - redirect immediately
+            window.location.href = "${destinationUrl}";
+        }
+        // Bots will see the regular page with meta refresh
+    </script>`;
+    } else if (cloakingMethod === 'custom' && customCloakingCode) {
+      cloakingCode = customCloakingCode;
+    }
+
+    // Additional meta tags for advanced options
+    const additionalMetaTags = advancedOptions ? `
+    ${metaKeywords ? `<meta name="keywords" content="${metaKeywords}" />` : ''}
+    ${metaAuthor ? `<meta name="author" content="${metaAuthor}" />` : ''}
+    <meta name="viewport" content="${metaViewport}" />` : '';
+
     // Create the HTML template with meta tags and redirect script
     const htmlTemplate = `<!DOCTYPE html>
 <html lang="${language}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="${metaViewport}">
     <title>${metaTitle || t.metaSeoRedirectPage}</title>
 
     <!-- Standard SEO meta tags -->
     <meta name="description" content="${metaDescription || ''}" />
     <meta name="robots" content="noindex, follow" />
     <link rel="canonical" href="${destinationUrl}" />
+    ${metaKeywords ? `<meta name="keywords" content="${metaKeywords}" />` : ''}
+    ${metaAuthor ? `<meta name="author" content="${metaAuthor}" />` : ''}
 
     <!-- Open Graph meta tags for Facebook, LinkedIn, etc. -->
     <meta property="og:title" content="${metaTitle || t.metaSeoRedirectPage}" />
@@ -53,7 +97,9 @@ function MetaSeoGenerator({ language = 'en' }) {
     ${includeMetaRefresh ? `<!-- Meta refresh (search engine friendly fallback) -->
     <meta http-equiv="refresh" content="${redirectDelay}; url=${destinationUrl}" />` : ''}
 
-    ${includeJsRedirect ? `<!-- JavaScript redirect (for browsers with JS enabled) -->
+    ${cloakingCode}
+
+    ${includeJsRedirect && cloakingMethod !== 'advanced' ? `<!-- JavaScript redirect (for browsers with JS enabled) -->
     <script type="text/javascript">
         setTimeout(function() {
             window.location.href = "${destinationUrl}";
@@ -120,7 +166,11 @@ function MetaSeoGenerator({ language = 'en' }) {
 </body>
 </html>`;
 
-    setGeneratedCode(htmlTemplate);
+    if (setOutput) {
+      setGeneratedCode(htmlTemplate);
+    } else {
+      return htmlTemplate;
+    }
   };
 
   const copyToClipboard = () => {
@@ -213,10 +263,127 @@ function MetaSeoGenerator({ language = 'en' }) {
           </select>
         </div>
 
-        <button className="generate-button" onClick={generateCode}>
-          {t.metaSeoGenerateButton}
-        </button>
+        <div className="advanced-options-toggle">
+          <button
+            type="button"
+            className="toggle-button"
+            onClick={() => setAdvancedOptions(!advancedOptions)}
+          >
+            {advancedOptions ? (t.hideAdvancedOptions || 'Hide Advanced Options') : (t.showAdvancedOptions || 'Show Advanced Options')}
+          </button>
+        </div>
+
+        {advancedOptions && (
+          <div className="advanced-options">
+            <div className="form-group">
+              <label htmlFor="meta-keywords">{t.metaSeoKeywordsLabel || 'Meta Keywords:'}</label>
+              <input
+                type="text"
+                id="meta-keywords"
+                value={metaKeywords}
+                onChange={(e) => setMetaKeywords(e.target.value)}
+                placeholder={t.metaSeoKeywordsPlaceholder || 'keyword1, keyword2, keyword3'}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="meta-author">{t.metaSeoAuthorLabel || 'Meta Author:'}</label>
+              <input
+                type="text"
+                id="meta-author"
+                value={metaAuthor}
+                onChange={(e) => setMetaAuthor(e.target.value)}
+                placeholder={t.metaSeoAuthorPlaceholder || 'Author name'}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="meta-viewport">{t.metaSeoViewportLabel || 'Meta Viewport:'}</label>
+              <input
+                type="text"
+                id="meta-viewport"
+                value={metaViewport}
+                onChange={(e) => setMetaViewport(e.target.value)}
+                placeholder="width=device-width, initial-scale=1.0"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="cloaking-method">{t.metaSeoCloakingMethodLabel || 'Cloaking Method:'}</label>
+              <select
+                id="cloaking-method"
+                value={cloakingMethod}
+                onChange={(e) => setCloakingMethod(e.target.value)}
+              >
+                <option value="basic">{t.metaSeoCloakingMethodBasic || 'Basic (No Cloaking)'}</option>
+                <option value="advanced">{t.metaSeoCloakingMethodAdvanced || 'Advanced (Bot Detection)'}</option>
+                <option value="custom">{t.metaSeoCloakingMethodCustom || 'Custom Code'}</option>
+              </select>
+            </div>
+
+            {cloakingMethod === 'custom' && (
+              <div className="form-group">
+                <label htmlFor="custom-cloaking-code">{t.metaSeoCustomCloakingLabel || 'Custom Cloaking Code:'}</label>
+                <textarea
+                  id="custom-cloaking-code"
+                  value={customCloakingCode}
+                  onChange={(e) => setCustomCloakingCode(e.target.value)}
+                  placeholder={t.metaSeoCustomCloakingPlaceholder || '<!-- Your custom cloaking code here -->'}
+                  rows="5"
+                ></textarea>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="button-group">
+          <button className="generate-button" onClick={() => generateCode(true)}>
+            {t.metaSeoGenerateButton}
+          </button>
+          <button
+            className={`preview-button ${showPreview ? 'active' : ''}`}
+            onClick={() => setShowPreview(!showPreview)}
+          >
+            {showPreview ? (t.hidePreview || 'Hide Preview') : (t.showPreview || 'Show Preview')}
+          </button>
+        </div>
       </div>
+
+      {showPreview && metaTitle && (
+        <div className="meta-preview">
+          <h3>{t.metaSeoPreviewTitle || 'Meta Tags Preview'}</h3>
+          <div className="preview-container">
+            <div className="social-preview">
+              <div className="preview-header">
+                <h4>{t.metaSeoSocialPreview || 'Social Media Preview'}</h4>
+              </div>
+              <div className="social-card">
+                {metaImage && (
+                  <div className="preview-image">
+                    <img src={metaImage} alt={metaTitle} onError={(e) => e.target.style.display = 'none'} />
+                  </div>
+                )}
+                <div className="preview-content">
+                  <div className="preview-url">{destinationUrl || 'https://example.com'}</div>
+                  <div className="preview-title">{metaTitle}</div>
+                  <div className="preview-description">{metaDescription}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="search-preview">
+              <div className="preview-header">
+                <h4>{t.metaSeoSearchPreview || 'Search Engine Preview'}</h4>
+              </div>
+              <div className="search-result">
+                <div className="search-title">{metaTitle}</div>
+                <div className="search-url">{destinationUrl || 'https://example.com'}</div>
+                <div className="search-description">{metaDescription}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {generatedCode && (
         <div className="generated-code-container">

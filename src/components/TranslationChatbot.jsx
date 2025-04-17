@@ -192,6 +192,7 @@ function TranslationChatbot({ onSettingsChange, showSettings, onCloseSettings, f
                 key={index}
                 message={msg.text}
                 isUser={msg.isUser}
+                language={settings.interfaceLanguage}
               />
             ))}
           </div>

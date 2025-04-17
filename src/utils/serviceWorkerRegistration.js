@@ -3,12 +3,20 @@
 export function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      const swUrl = `${window.location.origin}/language-chatbot/service-worker.js`;
-      
+      // Determine the correct path for the service worker
+      let swUrl;
+      if (window.location.pathname.includes('/language-chatbot/')) {
+        // GitHub Pages deployment
+        swUrl = `${window.location.origin}/language-chatbot/service-worker.js`;
+      } else {
+        // Local development or other deployment
+        swUrl = `${window.location.origin}/service-worker.js`;
+      }
+
       navigator.serviceWorker.register(swUrl)
         .then(registration => {
           console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          
+
           // Check for updates
           registration.onupdatefound = () => {
             const installingWorker = registration.installing;
@@ -22,7 +30,7 @@ export function registerServiceWorker() {
                   // but the previous service worker will still serve the older
                   // content until all client tabs are closed.
                   console.log('New content is available and will be used when all tabs for this page are closed.');
-                  
+
                   // Show update notification to user
                   if (window.confirm('New version available! Reload to update?')) {
                     window.location.reload();

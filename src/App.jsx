@@ -1,9 +1,21 @@
 import { useState, useEffect } from 'react';
 import TranslationChatbot from './components/TranslationChatbot';
 import MetaSeoGenerator from './components/MetaSeoGenerator';
+import SeoKeywordResearch from './components/SeoKeywordResearch';
+import CountryResearchTool from './components/CountryResearchTool';
+import AdminManagement from './components/AdminManagement';
+import SocialMediaAutomation from './components/SocialMediaAutomation';
+import ProxyChecker from './components/ProxyChecker';
 import TabPanel from './components/TabPanel';
 import Login from './components/Login';
 import translations from './utils/translations';
+
+// Import CSS for new components
+import './styles/seo-keyword.css';
+import './styles/country-research.css';
+import './styles/admin-management.css';
+import './styles/social-media.css';
+import './styles/proxy-checker.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('chat');
@@ -97,6 +109,31 @@ function App() {
           )}
           {activeTab === 'metaseo' && (
             <MetaSeoGenerator
+              language={interfaceLanguage}
+            />
+          )}
+          {activeTab === 'seokeyword' && (
+            <SeoKeywordResearch
+              language={interfaceLanguage}
+            />
+          )}
+          {activeTab === 'countryresearch' && (
+            <CountryResearchTool
+              language={interfaceLanguage}
+            />
+          )}
+          {activeTab === 'admin' && (
+            <AdminManagement
+              language={interfaceLanguage}
+            />
+          )}
+          {activeTab === 'socialmedia' && (
+            <SocialMediaAutomation
+              language={interfaceLanguage}
+            />
+          )}
+          {activeTab === 'proxychecker' && (
+            <ProxyChecker
               language={interfaceLanguage}
             />
           )}
